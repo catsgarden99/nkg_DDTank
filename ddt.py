@@ -8,8 +8,11 @@ import pyperclip
 def checkContains():
     for key,value in statueDict.items():
         statueDict[key] = pyautogui.locateCenterOnScreen(key,confidence=0.85)
-    #     print(key,':',value,',',end='',flush=True)
-    # print('',end='\r',flush=True)
+
+def checkRequest():
+    location = pyautogui.locateCenterOnScreen('get.png',confidence=0.85)
+    if location != None:
+        pyautogui.click(location.x,location.y,clicks=1,interval=0.2,duration=0.2,button="left")
 
 def doActionSingle4():
     global statue
@@ -44,6 +47,38 @@ def doActionSingle4():
         pyautogui.keyUp('space')
         statue += 1
         print('打人')
+        currentTime = time.time()
+
+def doActionBoGuYunDongHui():
+    global statue
+    global paiCount
+    global currentTime
+    global actionCount
+    # 选关
+    if statueDict['boguyundonghui.png'] != None:
+        pyautogui.click(statueDict['boguyundonghui.png'].x,statueDict['boguyundonghui.png'].y,clicks=1,interval=0.2,duration=0.2,button="left")
+        statue = 0
+
+    # 开始，展开，确认需单击
+    if statueDict['start.png'] != None:
+        pyautogui.click(statueDict['start.png'].x,statueDict['start.png'].y,clicks=1,interval=0.2,duration=0.2,button="left")
+        statue = 0
+        actionCount += 1
+        print('局数:',actionCount,end='\r')
+    if statueDict['unexpand.png'] != None:
+        pyautogui.click(statueDict['unexpand.png'].x,statueDict['unexpand.png'].y,clicks=1,interval=0.2,duration=0.2,button="left")
+    if statueDict['pai.png'] != None and paiCount < 3:
+        pyautogui.click(statueDict['pai.png'].x,statueDict['pai.png'].y,clicks=1,interval=0.2,duration=0.2,button="left")
+    if statueDict['confirm.png'] != None:
+        pyautogui.click(statueDict['confirm.png'].x,statueDict['confirm.png'].y,clicks=1,interval=0.2,duration=0.2,button="left")
+    # 道具+发力
+    if statueDict['person.png'] != None and statue < 2 and time.time()-currentTime>8:
+        pyautogui.typewrite('33Z4B',interval=0.2)
+        time.sleep(0.1)
+        pyautogui.keyDown('space')
+        time.sleep(0.1)
+        pyautogui.keyUp('space')
+        statue += 1
         currentTime = time.time()
 
 def doActionBoGu():
@@ -93,19 +128,41 @@ def doActionBoGu():
         print('打人')
         currentTime = time.time()
 
+def doOpen():
+    global statue
+    global paiCount
+    global currentTime
+    if statueDict['multin.png'] != None:
+        pyautogui.click(statueDict['multin.png'].x,statueDict['multin.png'].y,clicks=1,interval=0.2,duration=0.2,button="left")
+        statue = 0
+    if statueDict['max.png'] != None:
+        pyautogui.click(statueDict['max.png'].x,statueDict['max.png'].y,clicks=1,interval=0.2,duration=0.2,button="left")
+    if statueDict['confirm.png'] != None:
+        pyautogui.click(statueDict['confirm.png'].x,statueDict['confirm.png'].y,clicks=1,interval=0.2,duration=0.2,button="left")
+        paiCount += 1
+        print('翻牌:',paiCount)
+
 
 if __name__ == '__main__':
     # 创建图片存在状态字典,key为图片名,value为location
     # statueDict = {'start.png':'','fly.png':'','unexpand.png':'','pai.png':'','person.png':'','pay.png':'','confirm.png':''}
     statueDict = {'start.png':'','people.png':'','unexpand.png':'','pai.png':'','person.png':'','confirm.png':'','bogu.png':'','run.png':''}
+    # statueDict = {'multin.png':'','max.png':'','confirm.png':'','book1.png':'','book2.png':''}
+    # 运动会
+    # statueDict = {'start.png':'','people.png':'','unexpand.png':'','pai.png':'','person.png':'','confirm.png':'','boguyundonghui.png':'','run.png':''}
+
     statue = 0
     paiCount = 0
+    actionCount = 0
     currentTime = time.time()
 
     while True:
         checkContains()
+        checkRequest()
         # doActionSingle4()
         doActionBoGu()
+        # doOpen()
+        # doActionBoGuYunDongHui()
 
     # key=input('选择功能: 1.做一次 2.循环到死 \n')
     # if key=='1':
